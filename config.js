@@ -1,5 +1,5 @@
 
 window.SIQA_CONFIG = {
   SUPABASE_URL: "https://fyzczovufzqlvhersvgl.supabase.co",
-  SUPABASE_ANON_KEY: "UNIVESP2026"
+  SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5emN6b3Z1ZnpxbHZoZXJzdmdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzMjQxNTMsImV4cCI6MjEwNDkwMDE1M30.85XN5gkhrvHXs9EEzlurAzpnxklCZwXAFisMjyIbVoM"
 };
