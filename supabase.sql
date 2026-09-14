@@ -1,5 +1,3 @@
--- SIQA — banco Supabase
--- Execute este script no SQL Editor do Supabase.
 
 create extension if not exists pgcrypto;
 
@@ -38,7 +36,6 @@ alter table public.ambientes enable row level security;
 alter table public.leituras enable row level security;
 alter table public.alertas enable row level security;
 
--- Para protótipo acadêmico público com chave anon:
 drop policy if exists "public read ambientes" on public.ambientes;
 create policy "public read ambientes" on public.ambientes for select to anon using (true);
 
@@ -68,5 +65,4 @@ select id, 710,23.0,54,10,now()-interval '3 hours' from public.ambientes where n
 insert into public.leituras (ambiente_id,co2,temperatura,umidade,pm25,coletado_em)
 select id, 680,22.9,53,9,now()-interval '2 hours' from public.ambientes where nome='Sala 04';
 
--- Depois, se você adicionar login/autenticação, troque as policies públicas
--- por policies baseadas em auth.uid() e não deixe INSERT público.
+
