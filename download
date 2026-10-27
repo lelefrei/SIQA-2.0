@@ -1,0 +1,23 @@
+﻿
+# Arquivos gerados pelo .NET
+**/bin/
+**/obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Configurações locais e segredos
+appsettings.Development.json
+.env
+.env.*
+secrets.json
+
+# Arquivos de publicação
+publish/
+artifacts/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db

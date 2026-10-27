@@ -1,0 +1,411 @@
+﻿```cshtml
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SIQA</title>
+
+    <script type="importmap"></script>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/SIQA.styles.css" asp-append-version="true" />
+
+    <style>
+            :root {
+                --sidebar-width: 250px;
+                --sidebar-bg: #172333;
+                --sidebar-text: #c5d0de;
+                --sidebar-active: #29445f;
+                --accent: #78b7ef;
+                --page-bg: #f4f7fb;
+                --content-text: #253347;
+            }
+
+            body {
+                margin: 0;
+                min-height: 100vh;
+                background: var(--page-bg);
+                color: var(--content-text);
+                transition: background .2s, color .2s;
+            }
+
+            .siqa-sidebar {
+                position: fixed;
+                inset: 0 auto 0 0;
+                z-index: 1030;
+                width: var(--sidebar-width);
+                display: flex;
+                flex-direction: column;
+                padding: 24px 16px;
+                background: var(--sidebar-bg);
+                color: white;
+                overflow-y: auto;
+            }
+
+            .siqa-brand {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 0 10px 28px;
+                color: white;
+                text-decoration: none;
+            }
+
+            .siqa-brand-icon {
+                display: grid;
+                place-items: center;
+                width: 44px;
+                height: 44px;
+                border-radius: 12px;
+                background: var(--accent);
+                color: #13263b;
+                font-size: 23px;
+                font-weight: 800;
+            }
+
+            .siqa-brand-name {
+                margin: 0;
+                font-size: 23px;
+                font-weight: 750;
+                letter-spacing: .5px;
+            }
+
+            .siqa-brand-subtitle {
+                display: block;
+                margin-top: 2px;
+                color: #aab9ca;
+                font-size: 10px;
+            }
+
+            .siqa-menu-label {
+                padding: 8px 12px;
+                color: #8799ad;
+                font-size: 10px;
+                font-weight: 700;
+                letter-spacing: 1.4px;
+                text-transform: uppercase;
+            }
+
+            .siqa-nav {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
+
+                .siqa-nav a {
+                    display: flex;
+                    align-items: center;
+                    gap: 13px;
+                    min-height: 48px;
+                    padding: 11px 13px;
+                    border-radius: 10px;
+                    color: var(--sidebar-text);
+                    text-decoration: none;
+                    font-size: 14px;
+                    transition: background .2s, color .2s;
+                }
+
+                    .siqa-nav a:hover {
+                        background: #22354a;
+                        color: white;
+                    }
+
+                    .siqa-nav a.active {
+                        background: var(--sidebar-active);
+                        color: white;
+                        box-shadow: inset 3px 0 var(--accent);
+                    }
+
+                .siqa-nav .nav-icon {
+                    width: 22px;
+                    text-align: center;
+                    font-size: 19px;
+                }
+
+            .siqa-sidebar-footer {
+                margin-top: auto;
+                padding: 18px 12px 0;
+                border-top: 1px solid #344354;
+                color: #aab9ca;
+                font-size: 12px;
+            }
+
+            .siqa-main {
+                min-height: 100vh;
+                margin-left: var(--sidebar-width);
+                display: flex;
+                flex-direction: column;
+            }
+
+            .siqa-topbar {
+                min-height: 70px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 16px;
+                padding: 14px 30px;
+                background: var(--page-bg);
+                border-bottom: 1px solid #e1e7ef;
+            }
+
+            .siqa-page-title {
+                margin: 0;
+                font-size: 20px;
+                font-weight: 700;
+            }
+
+            .siqa-content {
+                flex: 1;
+                padding: 28px 30px;
+            }
+
+            .siqa-footer {
+                padding: 16px 30px;
+                border-top: 1px solid #e1e7ef;
+                color: #778397;
+                font-size: 12px;
+            }
+
+                .siqa-footer a {
+                    color: inherit;
+                }
+
+            .siqa-theme-button,
+            .siqa-mobile-button {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                padding: 9px 13px;
+                border: 1px solid #d8e0e9;
+                border-radius: 9px;
+                background: transparent;
+                color: inherit;
+                cursor: pointer;
+            }
+
+            .siqa-mobile-button {
+                display: none;
+            }
+
+            body.dark-mode {
+                --page-bg: #101923;
+                --content-text: #e0e8f2;
+            }
+
+                body.dark-mode .siqa-topbar {
+                    border-color: #2a3747;
+                }
+
+                body.dark-mode .siqa-footer {
+                    border-color: #2a3747;
+                    color: #9baabd;
+                }
+
+                body.dark-mode .siqa-theme-button,
+                body.dark-mode .siqa-mobile-button {
+                    border-color: #3a4a5d;
+                }
+
+                body.dark-mode .card,
+                body.dark-mode .modal-content,
+                body.dark-mode .dropdown-menu {
+                    background-color: #1a2635;
+                    color: #e0e8f2;
+                    border-color: #344354;
+                }
+
+                body.dark-mode .table {
+                    --bs-table-bg: transparent;
+                    --bs-table-color: #e0e8f2;
+                    --bs-table-border-color: #344354;
+                }
+
+                body.dark-mode .text-muted {
+                    color: #aab9ca !important;
+                }
+
+            .siqa-overlay {
+                display: none;
+            }
+
+            @@media (max-width: 768px) {
+                .siqa-sidebar {
+                    transform: translateX(-100%);
+                    transition: transform .25s ease;
+                }
+
+                body.sidebar-open .siqa-sidebar {
+                    transform: translateX(0);
+                }
+
+                .siqa-overlay {
+                    position: fixed;
+                    inset: 0;
+                    z-index: 1020;
+                    background: rgba(0, 0, 0, .5);
+                }
+
+                body.sidebar-open .siqa-overlay {
+                    display: block;
+                }
+
+                .siqa-main {
+                    margin-left: 0;
+                }
+
+                .siqa-mobile-button {
+                    display: inline-flex;
+                }
+
+                .siqa-topbar {
+                    padding: 12px 16px;
+                }
+
+                .siqa-content {
+                    padding: 20px 16px;
+                }
+
+                .siqa-footer {
+                    padding: 16px;
+                }
+
+                .siqa-page-title {
+                    font-size: 17px;
+                }
+            }
+    </style>
+</head>
+
+<body>
+    <aside class="siqa-sidebar" id="siqaSidebar">
+        <a class="siqa-brand" asp-controller="Dashboard" asp-action="Index">
+            <span class="siqa-brand-icon">S</span>
+            <span>
+                <span class="siqa-brand-name">SIQA</span>
+                <span class="siqa-brand-subtitle">Qualidade do ar</span>
+            </span>
+        </a>
+
+        <div class="siqa-menu-label">Menu principal</div>
+
+        <nav class="siqa-nav" aria-label="Navegação principal">
+            <a asp-controller="Dashboard" asp-action="Index"
+               class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Dashboard" ? "active" : "")">
+                <span class="nav-icon">⌂</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a asp-controller="Ambientes" asp-action="Index"
+               class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Ambientes" ? "active" : "")">
+                <span class="nav-icon">▦</span>
+                <span>Ambientes</span>
+            </a>
+
+            <a asp-controller="Historico" asp-action="Index"
+               class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Historico" ? "active" : "")">
+                <span class="nav-icon">◷</span>
+                <span>Histórico</span>
+            </a>
+        </nav>
+
+        <div class="siqa-sidebar-footer">
+            <div>SIQA · 2026</div>
+            <div class="mt-1">Monitoramento da qualidade do ar</div>
+        </div>
+    </aside>
+
+    <div class="siqa-overlay" id="siqaOverlay"></div>
+
+    <div class="siqa-main">
+        <header class="siqa-topbar">
+            <div class="d-flex align-items-center gap-3">
+                <button class="siqa-mobile-button" id="siqaMenuButton"
+                        type="button" aria-label="Abrir menu">
+                    ☰
+                </button>
+
+                <h1 class="siqa-page-title">
+                    @(ViewData["Title"] ?? "Dashboard")
+                </h1>
+            </div>
+
+            <button class="siqa-theme-button" id="siqaThemeButton" type="button">
+                <span id="siqaThemeIcon">☾</span>
+                <span id="siqaThemeText">Modo escuro</span>
+            </button>
+        </header>
+
+        <main role="main" class="siqa-content">
+            @RenderBody()
+        </main>
+
+        <footer class="siqa-footer">
+            &copy; 2026 - SIQA
+            <span class="mx-2">·</span>
+            <a asp-controller="Home" asp-action="Privacy">Privacidade</a>
+        </footer>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+            (() => {
+                const body = document.body;
+                const themeButton = document.getElementById("siqaThemeButton");
+                const themeIcon = document.getElementById("siqaThemeIcon");
+                const themeText = document.getElementById("siqaThemeText");
+                const menuButton = document.getElementById("siqaMenuButton");
+                const overlay = document.getElementById("siqaOverlay");
+
+                function applyTheme(isDark) {
+                    body.classList.toggle("dark-mode", isDark);
+                    themeIcon.textContent = isDark ? "☀" : "☾";
+                    themeText.textContent = isDark ? "Modo claro" : "Modo escuro";
+                }
+
+                let savedTheme = null;
+
+                try {
+                    savedTheme = localStorage.getItem("siqa-theme");
+                } catch {
+                    // O tema continua funcionando mesmo se o armazenamento estiver indisponível.
+                }
+
+                applyTheme(savedTheme === "dark");
+
+                themeButton.addEventListener("click", () => {
+                    const isDark = !body.classList.contains("dark-mode");
+                    applyTheme(isDark);
+
+                    try {
+                        localStorage.setItem("siqa-theme", isDark ? "dark" : "light");
+                    } catch {
+                        // Não impede a troca de tema.
+                    }
+                });
+
+                function closeMenu() {
+                    body.classList.remove("sidebar-open");
+                }
+
+                menuButton.addEventListener("click", () => {
+                    body.classList.toggle("sidebar-open");
+                });
+
+                overlay.addEventListener("click", closeMenu);
+
+                document.querySelectorAll(".siqa-nav a").forEach(link => {
+                    link.addEventListener("click", closeMenu);
+                });
+            })();
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+```

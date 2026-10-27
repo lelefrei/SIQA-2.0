@@ -1,0 +1,117 @@
+﻿@model IEnumerable<SIQA.Models.Ambiente>
+
+@{
+    ViewData["Title"] = "Ambientes";
+}
+
+<div class="container py-4">
+
+    @if (TempData["Sucesso"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show"
+             role="alert">
+            @TempData["Sucesso"]
+            <button type="button" class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Fechar"></button>
+        </div>
+    }
+
+    @if (TempData["Erro"] != null)
+    {
+        <div class="alert alert-warning alert-dismissible fade show"
+             role="alert">
+            @TempData["Erro"]
+            <button type="button" class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Fechar"></button>
+        </div>
+    }
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Ambientes</h2>
+            <p class="text-muted mb-0">
+                Gerencie os ambientes monitorados pelo SIQA.
+            </p>
+        </div>
+
+        <a asp-action="Create" class="btn btn-primary">
+            + Novo ambiente
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            @if (!Model.Any())
+            {
+                <div class="text-center py-5">
+                    <h5>Nenhum ambiente cadastrado</h5>
+                    <p class="text-muted">
+                        Cadastre um ambiente para começar.
+                    </p>
+                    <a asp-action="Create" class="btn btn-primary">
+                        Cadastrar ambiente
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Localização</th>
+                                <th>Status</th>
+                                <th class="text-end">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var ambiente in Model)
+                            {
+                                <tr>
+                                    <td class="fw-semibold">
+                                        @ambiente.Nome
+                                    </td>
+                                    <td>
+                                        @(string.IsNullOrWhiteSpace(ambiente.Localizacao)
+                                            ? "Não informada"
+                                            : ambiente.Localizacao)
+                                    </td>
+                                    <td>
+                                        @if (ambiente.Ativo)
+                                        {
+                                            <span class="badge bg-success">
+                                                Ativo
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">
+                                                Inativo
+                                            </span>
+                                        }
+                                    </td>
+                                    <td class="text-end">
+                                        <a asp-action="Edit"
+                                           asp-route-id="@ambiente.Id"
+                                           class="btn btn-sm btn-outline-primary">
+                                            Editar
+                                        </a>
+
+                                        <a asp-action="Delete"
+                                           asp-route-id="@ambiente.Id"
+                                           class="btn btn-sm btn-outline-danger">
+                                            Excluir
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>

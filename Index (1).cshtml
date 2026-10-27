@@ -1,0 +1,468 @@
+﻿@model SIQA.Models.Dashboard
+
+@{
+    ViewData["Title"] = "Dashboard";
+    var cultura = System.Globalization.CultureInfo.GetCultureInfo("pt-BR");
+}
+
+<style>
+    body {
+        transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+        body.dark-mode {
+            background-color: #111827 !important;
+            color: #e5e7eb !important;
+        }
+
+            body.dark-mode .siqa-dashboard {
+                color: #e5e7eb;
+            }
+
+            body.dark-mode .card {
+                background-color: #1f2937 !important;
+                color: #e5e7eb !important;
+                border: 1px solid #374151 !important;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+            }
+
+            body.dark-mode .text-secondary {
+                color: #b8c2d1 !important;
+            }
+
+            body.dark-mode h1,
+            body.dark-mode h2,
+            body.dark-mode h3,
+            body.dark-mode h4,
+            body.dark-mode h5,
+            body.dark-mode .fw-bold {
+                color: #f9fafb !important;
+            }
+
+            body.dark-mode .table {
+                --bs-table-color: #e5e7eb;
+                --bs-table-bg: #1f2937;
+                --bs-table-border-color: #374151;
+                --bs-table-hover-color: #ffffff;
+                --bs-table-hover-bg: #374151;
+            }
+
+            body.dark-mode .table-light,
+            body.dark-mode .table-light th {
+                background-color: #374151 !important;
+                color: #ffffff !important;
+            }
+
+            body.dark-mode .table > :not(caption) > * > * {
+                background-color: transparent;
+                color: #e5e7eb;
+                border-color: #374151;
+            }
+
+            body.dark-mode .btn-outline-secondary {
+                color: #e5e7eb;
+                border-color: #9ca3af;
+            }
+
+                body.dark-mode .btn-outline-secondary:hover {
+                    background-color: #374151;
+                    color: #ffffff;
+                }
+
+            body.dark-mode .btn-outline-primary {
+                color: #93c5fd;
+                border-color: #60a5fa;
+            }
+
+                body.dark-mode .btn-outline-primary:hover {
+                    background-color: #2563eb;
+                    color: #ffffff;
+                }
+
+    .siqa-theme-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        white-space: nowrap;
+    }
+
+    .siqa-chart-container {
+        height: 300px;
+        position: relative;
+    }
+
+    @@media (max-width: 576px) {
+        .siqa-chart-container {
+            height: 250px;
+        }
+    }
+</style>
+
+<div class="container-fluid py-4 siqa-dashboard">
+
+    <!-- Cabeçalho -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h1 class="fw-bold mb-1">Dashboard SIQA</h1>
+            <p class="text-secondary mb-0">
+                Monitoramento de temperatura, umidade e ambientes.
+            </p>
+        </div>
+
+            <a asp-controller="Dashboard"
+               asp-action="Index"
+               class="btn btn-outline-primary">
+                ↻ Atualizar
+            </a>
+        </div>
+    </div>
+
+    <!-- Indicadores -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="text-secondary small">Temperatura atual</div>
+
+                    <div class="fs-2 fw-bold">
+                        @Model.TemperaturaAtual °C
+                    </div>
+
+                    <div class="text-secondary small">
+                        Última leitura registrada
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="text-secondary small">Umidade atual</div>
+
+                    <div class="fs-2 fw-bold">
+                        @Model.UmidadeAtual%
+                    </div>
+
+                    <div class="text-secondary small">
+                        Umidade relativa do ar
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="text-secondary small">Leituras hoje</div>
+                    <div class="fs-2 fw-bold">@Model.LeiturasHoje</div>
+
+                    <div class="text-secondary small">
+                        Registros do dia atual
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="text-secondary small">Status do sensor</div>
+
+                    <div class="fs-4 fw-bold mt-2">
+                        @Model.StatusSensor
+                    </div>
+
+                    <div class="text-secondary small">
+                        @(Model.UltimaAtualizacao?.ToString("dd/MM/yyyy HH:mm") ?? "Sem atualização")
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Gráficos -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-12 col-xl-8">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Histórico de temperatura</h5>
+
+                    <div class="siqa-chart-container">
+                        <canvas id="graficoTemperatura"
+                                aria-label="Gráfico histórico de temperatura"
+                                role="img"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Histórico de umidade</h5>
+
+                    <div class="siqa-chart-container">
+                        <canvas id="graficoUmidade"
+                                aria-label="Gráfico histórico de umidade"
+                                role="img"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Ambientes cadastrados -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+                <h5 class="fw-bold mb-0">Ambientes cadastrados</h5>
+
+                <span class="badge bg-primary">
+                    @(Model.Ambientes?.Count ?? 0) ambiente(s)
+                </span>
+            </div>
+
+            @if (Model.Ambientes == null || !Model.Ambientes.Any())
+            {
+                <p class="text-secondary mb-0">
+                    Nenhum ambiente cadastrado ou disponível para exibição.
+                </p>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">Ambiente</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var ambiente in Model.Ambientes)
+                            {
+                                <tr>
+                                    <td>@ambiente.Nome</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+        </div>
+    </div>
+
+    <!-- Leituras recentes -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+
+            <h5 class="fw-bold mb-3">Leituras recentes</h5>
+
+            @if (Model.LeiturasRecentes == null || !Model.LeiturasRecentes.Any())
+            {
+                <p class="text-secondary mb-0">
+                    Nenhuma leitura registrada até o momento.
+                </p>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">Data e hora</th>
+                                <th scope="col">Temperatura</th>
+                                <th scope="col">Umidade</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var leitura in Model.LeiturasRecentes)
+                            {
+                                <tr>
+                                    <td>
+                                            @leitura.DataHora.ToString("dd/MM/yyyy HH:mm")
+                                    </td>
+
+                                    <td>
+                                        @leitura.Temperatura.ToString("N1", cultura) °C
+                                    </td>
+
+                                    <td>
+                                        @leitura.Umidade.ToString("N1", cultura)%
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const leituras = @Html.Raw(
+                                    System.Text.Json.JsonSerializer.Serialize(
+                                            Model.LeiturasGrafico?.Select(l => new
+                                {
+                                                    data = l.DataHora.ToLocalTime().ToString("dd/MM HH:mm"),
+                                                    temperatura = l.Temperatura,
+                                                    umidade = l.Umidade
+                                }) ?? Enumerable.Empty<object>()
+                    )
+                    );
+
+        const labels = leituras.map(l => l.data);
+
+        const opcoesBase = {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom'
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        maxTicksLimit: 8,
+                        maxRotation: 0,
+                        color: '#6b7280'
+                    },
+                    grid: {
+                        color: 'rgba(107, 114, 128, 0.15)'
+                    }
+                },
+                y: {
+                    ticks: {
+                        color: '#6b7280'
+                    },
+                    grid: {
+                        color: 'rgba(107, 114, 128, 0.15)'
+                    }
+                }
+            }
+        };
+
+        const graficoTemperatura = new Chart(
+            document.getElementById('graficoTemperatura'),
+            {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Temperatura (°C)',
+                        data: leituras.map(l => l.temperatura),
+                        borderColor: '#e76f51',
+                        backgroundColor: 'rgba(231, 111, 81, 0.12)',
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 3,
+                        spanGaps: true
+                    }]
+                },
+                options: structuredClone(opcoesBase)
+            }
+        );
+
+        const graficoUmidade = new Chart(
+            document.getElementById('graficoUmidade'),
+            {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Umidade (%)',
+                        data: leituras.map(l => l.umidade),
+                        borderColor: '#3a86ff',
+                        backgroundColor: 'rgba(58, 134, 255, 0.12)',
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 3,
+                        spanGaps: true
+                    }]
+                },
+                options: structuredClone(opcoesBase)
+            }
+        );
+
+        // Alternância entre modo claro e escuro
+        (() => {
+            const botao = document.getElementById('btnTema');
+            const icone = document.getElementById('iconeTema');
+            const texto = document.getElementById('textoTema');
+
+            if (!botao || !icone || !texto) return;
+
+            function aplicarTema(escuro) {
+                document.body.classList.toggle('dark-mode', escuro);
+
+                icone.textContent = escuro ? '☀️' : '🌙';
+                texto.textContent = escuro ? 'Modo claro' : 'Modo escuro';
+
+                botao.setAttribute(
+                    'aria-label',
+                    escuro ? 'Ativar modo claro' : 'Ativar modo escuro'
+                );
+
+                [graficoTemperatura, graficoUmidade].forEach(grafico => {
+                    const corTexto = escuro ? '#e5e7eb' : '#6b7280';
+                    const corGrade = escuro
+                        ? 'rgba(229, 231, 235, 0.12)'
+                        : 'rgba(107, 114, 128, 0.15)';
+
+                    grafico.options.scales.x.ticks.color = corTexto;
+                    grafico.options.scales.y.ticks.color = corTexto;
+                    grafico.options.scales.x.grid.color = corGrade;
+                    grafico.options.scales.y.grid.color = corGrade;
+
+                    grafico.update();
+                });
+            }
+
+            let temaSalvo = false;
+
+            try {
+                temaSalvo = localStorage.getItem('siqa-tema') === 'dark';
+            } catch {
+                temaSalvo = false;
+            }
+
+            aplicarTema(temaSalvo);
+
+            botao.addEventListener('click', () => {
+                const escuro =
+                    !document.body.classList.contains('dark-mode');
+
+                aplicarTema(escuro);
+
+                try {
+                    localStorage.setItem(
+                        'siqa-tema',
+                        escuro ? 'dark' : 'light'
+                    );
+                } catch {
+                    // O tema continua funcionando sem armazenamento local.
+                }
+            });
+        })();
+    </script>
+}

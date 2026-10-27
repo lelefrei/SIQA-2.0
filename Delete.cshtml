@@ -1,0 +1,54 @@
+﻿@model SIQA.Models.Ambiente
+
+@{
+    ViewData["Title"] = "Excluir ambiente";
+}
+
+<div class="container py-4">
+    <div class="card border-0 shadow-sm mx-auto"
+         style="max-width: 600px;">
+        <div class="card-body p-4">
+            <h2 class="fw-bold text-danger mb-3">
+                Excluir ambiente
+            </h2>
+
+            <p>
+                Tem certeza de que deseja excluir este ambiente?
+            </p>
+
+            <dl class="row">
+                <dt class="col-sm-4">Nome</dt>
+                <dd class="col-sm-8">@Model.Nome</dd>
+
+                <dt class="col-sm-4">Localização</dt>
+                <dd class="col-sm-8">
+                    @(string.IsNullOrWhiteSpace(Model.Localizacao)
+                        ? "Não informada"
+                        : Model.Localizacao)
+                </dd>
+
+                <dt class="col-sm-4">Status</dt>
+                <dd class="col-sm-8">
+                    @(Model.Ativo ? "Ativo" : "Inativo")
+                </dd>
+            </dl>
+
+            <div class="alert alert-warning">
+                Ambientes com leituras associadas não poderão ser excluídos.
+            </div>
+
+            <form asp-action="Delete"
+                  asp-route-id="@Model.Id"
+                  method="post">
+                <button type="submit" class="btn btn-danger">
+                    Confirmar exclusão
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-outline-secondary ms-2">
+                    Cancelar
+                </a>
+            </form>
+        </div>
+    </div>
+</div>

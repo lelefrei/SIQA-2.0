@@ -1,0 +1,49 @@
+﻿@model IEnumerable<SIQA.Models.Leitura>
+
+@{
+    ViewData["Title"] = "Histórico de Leituras";
+}
+
+<div class="container-fluid">
+    <h1>Histórico de Leituras</h1>
+    <p class="text-muted">
+        Consulte as leituras de temperatura e umidade registradas.
+    </p>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Temperatura (°C)</th>
+                    <th>Umidade (%)</th>
+                    <th>Data e hora</th>
+                    <th>Origem</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Any())
+                {
+                    @foreach (var leitura in Model)
+                    {
+                        <tr>
+                            <td>@leitura.Id</td>
+                            <td>@leitura.Temperatura.ToString("F1")</td>
+                            <td>@leitura.Umidade.ToString("F1")</td>
+                            <td>@leitura.DataHora.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>@leitura.Origem</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="text-center">
+                            Nenhuma leitura registrada.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
